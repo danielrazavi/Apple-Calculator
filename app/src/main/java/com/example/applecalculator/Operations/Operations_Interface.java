@@ -1,4 +1,4 @@
-package com.example.applecalculator;
+package com.example.applecalculator.Operations;
 
 /**
  * Created by Daniel on 2018-07-19.

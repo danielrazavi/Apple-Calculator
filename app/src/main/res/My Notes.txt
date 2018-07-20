@@ -19,4 +19,8 @@ Just learned what Shunting-Yard algorithm is
 and what a Reverse Polish Notation is. Very
 helpful.
 
-eyo
+Where should I apply the Stack and Queue?
+Would it be in onCreate? Probably, and then
+calling different metods of those
+datastructures in each button's case in
+onClick.

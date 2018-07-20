@@ -4,9 +4,11 @@ import android.support.v7.app.AppCompatActivity;
 import com.example.applecalculator.Operations.Multiplacation;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
+import java.util.Stack;
+import java.util.Queue;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -18,27 +20,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ImageButton percent_button,period_button,posneg_button,process_button,clear_button,
     multi_button,division_button,add_button,subtract_button;
 
-    EditText mathView;
+    TextView mathView;
 
     private static double first_number  = Double.NaN;
     private static double second_number = Double.NaN;
     public static String math_view = "0";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        setup_things();
+        setup_views();
         setup_listeners();
+
+
 
     }
 
-
-    private void setup_things(){
+    private void setup_views(){
 
         //interface
-        mathView= findViewById(R.id.mathview);
+        mathView = findViewById(R.id.mathview);
         mathView.setText(math_view);
 
         //number buttons
