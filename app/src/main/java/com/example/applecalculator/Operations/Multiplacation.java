@@ -1,11 +1,11 @@
 package com.example.applecalculator.Operations;
-import com.example.applecalculator.Operations;
+import com.example.applecalculator.Operations_Interface;
 
 /**
  * Created by Daniel on 2018-07-19.
  */
 
-public class Multiplacation implements Operations {
+public class Multiplacation implements Operations_Interface {
 
     @Override
     public double oprt1Prmtr(int num1) {

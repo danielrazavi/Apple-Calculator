@@ -7,7 +7,7 @@ package com.example.applecalculator;
  * and 1 output.
  */
 
-public interface Operations {
+public interface Operations_Interface {
 
     /**
      * This method is for the operations that need one parameter.
