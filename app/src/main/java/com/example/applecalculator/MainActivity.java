@@ -105,34 +105,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch(view.getId())
             {
             case R.id.multibutton:
-                if (Double.isNaN(first_number)){
-                    first_number = Integer.parseInt(math_view);
-                    //some sort of toggle flag so that the next time a number button is clicked, the
-                    //math_view is reset and the new numbers take place into the math_view.
-                }
-                else if (Double.isNaN(second_number)){
-                    second_number = Integer.parseInt(math_view);
-                    //same toggle as above is invoked.
-                }
-
-                else{
-                    //BEDMAS stuff
-                }
-
-
-
-                int num1 = Integer.parseInt(first_number);
-                int num2 = Integer.parseInt(second_number);
-                int outcome = times.oprt2Prmtr(num1,num2);
-                int outcome=Integer.parseInt(first_number)*Integer.parseInt(second_number);
-                mathView.setText(String.valueOf(outcome));
+                int add=Integer.parseInt(first_number)*Integer.parseInt(second_number);
+                mathView.setText(String.valueOf(add));
                 break;
-
             case R.id.addbutton:
                 int add=Integer.parseInt(first_number)+Integer.parseInt(second_number);
                 mathView.setText(String.valueOf(add));
                 break;
-
             case R.id.subtractbutton:
                 int sub=Integer.parseInt(first_number)-Integer.parseInt(second_number);
                 mathView.setText(String.valueOf(sub));
