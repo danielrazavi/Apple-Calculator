@@ -1,5 +1,4 @@
 package com.example.applecalculator.Operations;
-import com.example.applecalculator.Operations_Interface;
 
 /**
  * Created by Daniel on 2018-07-19.

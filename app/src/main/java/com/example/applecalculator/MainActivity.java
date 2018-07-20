@@ -106,33 +106,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View view){
-        switch(view.getId())
-            {
-            case R.id.multibutton:
-                int add=Integer.parseInt(first_number)*Integer.parseInt(second_number);
-                mathView.setText(String.valueOf(add));
-                break;
-            case R.id.addbutton:
-                int add=Integer.parseInt(first_number)+Integer.parseInt(second_number);
-                mathView.setText(String.valueOf(add));
-                break;
-            case R.id.subtractbutton:
-                int sub=Integer.parseInt(first_number)-Integer.parseInt(second_number);
-                mathView.setText(String.valueOf(sub));
-                break;
-
-            case R.id.dvsnbutton:
-                try {
-                    int div = Integer.parseInt(first_number) / Integer.parseInt(second_number);
-                    mathView.setText(String.valueOf(div));
-                }
-
-                catch(Exception e)
-                {
-                    mathView.setText("Div. By 0..!!");
-                }
-                break;
-            }
+//        switch(view.getId())
+//            {
+//            case R.id.multibutton:
+//                int add=Integer.parseInt(first_number)*Integer.parseInt(second_number);
+//                mathView.setText(String.valueOf(add));
+//                break;
+//            case R.id.addbutton:
+//                int add=Integer.parseInt(first_number)+Integer.parseInt(second_number);
+//                mathView.setText(String.valueOf(add));
+//                break;
+//            case R.id.subtractbutton:
+//                int sub=Integer.parseInt(first_number)-Integer.parseInt(second_number);
+//                mathView.setText(String.valueOf(sub));
+//                break;
+//
+//            case R.id.dvsnbutton:
+//                try {
+//                    int div = Integer.parseInt(first_number) / Integer.parseInt(second_number);
+//                    mathView.setText(String.valueOf(div));
+//                }
+//
+//                catch(Exception e)
+//                {
+//                    mathView.setText("Div. By 0..!!");
+//                }
+//                break;
+//            }
         //gotta add other functionalities here, but first make sure what you have is working.
     }
 }
