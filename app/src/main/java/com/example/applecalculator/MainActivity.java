@@ -1,6 +1,7 @@
 package com.example.applecalculator;
 
 import android.support.v7.app.AppCompatActivity;
+import com.example.applecalculator.Operations.Multiplacation;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -8,6 +9,8 @@ import android.widget.ImageButton;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+
+    private Multiplacation times;
 
     private ImageButton zero_button, one_button, two_button, three_button, four_button, five_button,
             six_button, seven_button, eight_button, nine_button;
@@ -17,8 +20,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     EditText mathView;
 
-    private static String first_number ;
-    private static String second_number;
+    private static double first_number  = Double.NaN;
+    private static double second_number = Double.NaN;
     public static String math_view = "0";
 
     @Override
@@ -63,6 +66,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         add_button = findViewById(R.id.addbutton);
         subtract_button = findViewById(R.id.subtractbutton);
 
+
+        //operation classes
+        times = new Multiplacation();
+
     }
 
     private void setup_listeners() {
@@ -96,34 +103,53 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View view){
         switch(view.getId())
-        {
-        case R.id.multibutton:
-            int outcome=Integer.parseInt(first_number)*Integer.parseInt(second_number);
-            mathView.setText(String.valueOf(outcome));
-            break;
-
-        case R.id.twobutton:
-            int add=Integer.parseInt(first_number)+Integer.parseInt(second_number);
-            mathView.setText(String.valueOf(add));
-            break;
-
-        case R.id.threebutton:
-            int sub=Integer.parseInt(first_number)-Integer.parseInt(second_number);
-            mathView.setText(String.valueOf(sub));
-            break;
-
-        case R.id.fourbutton:
-            try {
-                int div = Integer.parseInt(first_number) / Integer.parseInt(second_number);
-                mathView.setText(String.valueOf(div));
-            }
-
-            catch(Exception e)
             {
-                mathView.setText("Div. By 0..!!");
+            case R.id.multibutton:
+                if (Double.isNaN(first_number)){
+                    first_number = Integer.parseInt(math_view);
+                    //some sort of toggle flag so that the next time a number button is clicked, the
+                    //math_view is reset and the new numbers take place into the math_view.
+                }
+                else if (Double.isNaN(second_number)){
+                    second_number = Integer.parseInt(math_view);
+                    //same toggle as above is invoked.
+                }
+
+                else{
+                    //BEDMAS stuff
+                }
+
+
+
+                int num1 = Integer.parseInt(first_number);
+                int num2 = Integer.parseInt(second_number);
+                int outcome = times.oprt2Prmtr(num1,num2);
+                int outcome=Integer.parseInt(first_number)*Integer.parseInt(second_number);
+                mathView.setText(String.valueOf(outcome));
+                break;
+
+            case R.id.addbutton:
+                int add=Integer.parseInt(first_number)+Integer.parseInt(second_number);
+                mathView.setText(String.valueOf(add));
+                break;
+
+            case R.id.subtractbutton:
+                int sub=Integer.parseInt(first_number)-Integer.parseInt(second_number);
+                mathView.setText(String.valueOf(sub));
+                break;
+
+            case R.id.dvsnbutton:
+                try {
+                    int div = Integer.parseInt(first_number) / Integer.parseInt(second_number);
+                    mathView.setText(String.valueOf(div));
+                }
+
+                catch(Exception e)
+                {
+                    mathView.setText("Div. By 0..!!");
+                }
+                break;
             }
-            break;
-        }
         //gotta add other functionalities here, but first make sure what you have is working.
     }
 }

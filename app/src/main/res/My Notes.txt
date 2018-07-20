@@ -1,0 +1,20 @@
+The numbers are going to be built into the 
+system and their respective functionalities.
+
+The operations are going to be objects of 
+some sort where they are called once they're
+clicked. 
+
+So far I don't know if there should be an
+implementation or extension to start it, but
+I do know that almost all operations are
+either two parameters or one, and they do 
+return something.
+
+So I'm thinking an interface that you give
+the parameters to and it returns the needed
+integer.
+
+Just learned what Shunting-Yard algorithm is
+and what a Reverse Polish Notation is. Very
+helpful.
