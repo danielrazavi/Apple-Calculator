@@ -20,17 +20,24 @@ import java.util.LinkedList;
 import java.util.Stack;
 import java.util.Queue;
 
+import static java.lang.Integer.parseInt;
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    //Attributes
+    //Views
     private ImageButton zero_button, one_button, two_button, three_button, four_button, five_button,
             six_button, seven_button, eight_button, nine_button;
     private ImageButton percent_button,period_button,posneg_button,process_button,clear_button,
-    multi_button,division_button,add_button,subtract_button;
+            multi_button,division_button,add_button,subtract_button;
     TextView mathView;
+
+    //Data Structures
     Stack<token> operations_stack;
     Queue<token> multi_usage_queue;
+
     public static String math_view = "0";
+
+    //flags
     Boolean reset_flag = true;
     Boolean used_already = false;
 
@@ -122,7 +129,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View view){
 
         if (!number_clicked(view)){
-            double translation = Integer.parseInt(math_view);
+            double translation = parseInt(math_view);
             numbers current_number = new numbers(translation);
             operations new_opt = null;
             multi_usage_queue.add(current_number);
@@ -136,7 +143,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             else if(view.getId() == R.id.subtractbutton) { new_opt = new subtraction();}
             //but what about these?
             else if(view.getId() == R.id.percentbutton){
-                //no clue how, but research
+                int check_number = Integer.parseInt(math_view);
+                if (check_number != 0){
+                    math_view = String.valueOf(check_number/100);
+                }
             }
             else if(view.getId() == R.id.processbutton){
                 //gotta give the solution, if there isn't a second operand, you repeat what ever

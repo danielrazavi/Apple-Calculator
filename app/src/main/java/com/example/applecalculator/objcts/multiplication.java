@@ -23,3 +23,5 @@ public class multiplication extends operations {
         return 2;
     }
 }
+
+
