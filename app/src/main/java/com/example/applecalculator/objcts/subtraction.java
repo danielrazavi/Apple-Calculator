@@ -1,11 +1,6 @@
 package com.example.applecalculator.objcts;
 
-public class subtraction extends token {
-
-    @Override
-    public String get_type() {
-        return "operation";
-    }
+public class subtraction extends operations {
 
     public double operate(int num1, int num2){
         return num1 - num2;
@@ -19,7 +14,8 @@ public class subtraction extends token {
     Addition        1
     Subtraction     1
      */
-    public int get_priority(){
+    @Override
+    public int get_priority() {
         return 1;
     }
 }

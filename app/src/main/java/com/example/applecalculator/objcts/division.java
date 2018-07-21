@@ -1,11 +1,6 @@
 package com.example.applecalculator.objcts;
 
-public class division extends token {
-
-    @Override
-    public String get_type() {
-        return "operation";
-    }
+public class division extends operations {
 
     public double operate(int num1, int num2){
         // How should I handle num2 equalling 0?
@@ -20,7 +15,8 @@ public class division extends token {
     Addition        1
     Subtraction     1
      */
-    public int get_priority(){
+    @Override
+    public int get_priority() {
         return 2;
     }
 }

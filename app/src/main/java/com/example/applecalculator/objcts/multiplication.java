@@ -4,12 +4,7 @@ package com.example.applecalculator.objcts;
  * Created by Daniel on 2018-07-19.
  */
 
-public class multiplication extends token {
-
-    @Override
-    public String get_type() {
-        return "operation";
-    }
+public class multiplication extends operations {
 
     public double operate(int num1, int num2){
         return num1 * num2;
@@ -23,7 +18,8 @@ public class multiplication extends token {
     Addition        1
     Subtraction     1
      */
-    public int get_priority(){
+    @Override
+    public int get_priority() {
         return 2;
     }
 }

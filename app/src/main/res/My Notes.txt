@@ -34,3 +34,25 @@ operation calls.
 
 so numbers and operations somehow have to go
 into a queue/stack.
+
+Shunting-yard is already happening, but when
+is Postfix supposed to happen?
+
+the min a operator token is clicked pop
+a token from number stack and put it on the
+right operand, and another one and put it on
+the left operand. Evaluate the formula, and
+then push the result into the NumberStack.
+
+but wait 2 + 3 + will result in a premature
+solution, whereas 2 + 3 x needs another
+parameter, why? okay I think I understand
+the algorithm.
+
+what about number types? how do I decide on
+that?
+
+programatically switch between different 
+number types? or is there an easier way?
+
+Need to fix up percent and equal button.

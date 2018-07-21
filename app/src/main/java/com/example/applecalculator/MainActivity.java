@@ -1,11 +1,13 @@
 package com.example.applecalculator;
 
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 
 import com.example.applecalculator.objcts.addition;
 import com.example.applecalculator.objcts.division;
 import com.example.applecalculator.objcts.multiplication;
 import com.example.applecalculator.objcts.numbers;
+import com.example.applecalculator.objcts.operations;
 import com.example.applecalculator.objcts.subtraction;
 import com.example.applecalculator.objcts.token;
 
@@ -20,21 +22,14 @@ import java.util.Queue;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private multiplication times;
-
+    //Attributes
     private ImageButton zero_button, one_button, two_button, three_button, four_button, five_button,
             six_button, seven_button, eight_button, nine_button;
-
     private ImageButton percent_button,period_button,posneg_button,process_button,clear_button,
     multi_button,division_button,add_button,subtract_button;
-
     TextView mathView;
-
     Stack<token> operations_stack;
-    Queue<token> multiusage_queue;
-
-
-    private static double current_number;
+    Queue<token> multi_usage_queue;
     public static String math_view = "0";
     Boolean reset_flag = true;
     Boolean used_already = false;
@@ -48,11 +43,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setup_views();
         setup_listeners();
 
-        operations_stack = new Stack<token>();
-        multiusage_queue = new LinkedList<token>();
+        operations_stack = new Stack<>();
+        multi_usage_queue = new LinkedList<>();
 
     }
 
+    /**
+     * Setting up the views in one convenient function. Mostly because it's more organised like
+     * this.
+     */
     private void setup_views(){
 
         //interface
@@ -84,11 +83,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         add_button = findViewById(R.id.addbutton);
         subtract_button = findViewById(R.id.subtractbutton);
 
-
-        //operation classes
-        times = new multiplication();
-
     }
+
+    /**
+     * Setting up the listeners for the views in one convenient function. Mostly beacause it's more
+     * origanised like this.
+     */
     private void setup_listeners() {
 
         //number button listeners
@@ -124,30 +124,38 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (!number_clicked(view)){
             double translation = Integer.parseInt(math_view);
             numbers current_number = new numbers(translation);
-            multiusage_queue.add(current_number);
+            operations new_opt = null;
+            multi_usage_queue.add(current_number);
             reset_flag = true;
             used_already = false;
 
-            if(view.getId() == R.id.multibutton) {
-                multiplication opt = new multiplication();
-                operations_stack.push(opt);
+            //operations
+            if(view.getId() == R.id.multibutton) { new_opt = new multiplication();}
+            else if(view.getId() == R.id.dvsnbutton) { new_opt = new division();}
+            else if(view.getId() == R.id.addbutton) { new_opt = new addition();}
+            else if(view.getId() == R.id.subtractbutton) { new_opt = new subtraction();}
+            //but what about these?
+            else if(view.getId() == R.id.percentbutton){
+                //no clue how, but research
             }
-            else if(view.getId() == R.id.dvsnbutton) {
-                division opt = new division();
-                operations_stack.push(opt);
+            else if(view.getId() == R.id.processbutton){
+                //gotta give the solution, if there isn't a second operand, you repeat what ever
+                //you have for the math_view.
             }
-            else if(view.getId() == R.id.addbutton) {
-                addition opt = new addition();
-                operations_stack.push(opt);
+
+            if (new_opt != null){
+                update_operations_stack(new_opt);
+                operations_stack.push(new_opt);
             }
-            else if(view.getId() == R.id.subtractbutton) {
-                subtraction opt = new subtraction();
-                operations_stack.push(opt);
-            }
-            //gotta add other operations here, but first make sure what you have is working.
         }
     }
 
+    /**
+     * Handles numbered buttons' clicks and how numbers are put together behind the scenes.
+     * @param view: the view that was clicked
+     * @return Boolean representing whether if the clicked view was any of the numbered buttons.
+     */
+    @NonNull
     private Boolean number_clicked(View view){
 
         if(view.getId() == R.id.zerobutton){
@@ -259,7 +267,38 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 math_view = math_view + ".";
             }
             return true;
+        }else if(view.getId() == R.id.pnbutton){
+            if (math_view.charAt(0) == '-'){
+                math_view = math_view.substring(1);
+            }else {
+                math_view = '-' + math_view;
+
+            }
+            return true;
         }
         return false;
+    }
+
+    /**
+     * Basically enforcing BEDMAS.
+     * If the new operation has a higher/equal priority then the peak operation, the peak operation
+     * needs to go to the Queue, so that it is not dealt with anymore. If the stack is empty, then
+     * nothing needs to be done.
+     * @param new_opt: the new operation that needs to enter the stack
+     */
+    private void update_operations_stack(operations new_opt){
+        int kick = 0;
+        if (operations_stack.isEmpty()){
+            kick++;
+        }
+        while (kick == 0) {
+            operations peek_opt = (operations) operations_stack.peek();
+            if (peek_opt.get_priority() >= new_opt.get_priority()) {
+                token switchie_token = operations_stack.pop();
+                multi_usage_queue.add(switchie_token);
+            }else{
+                kick++;
+            }
+        }
     }
 }

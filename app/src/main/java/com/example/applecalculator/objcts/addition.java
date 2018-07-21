@@ -1,10 +1,7 @@
 package com.example.applecalculator.objcts;
 
-public class addition extends token {
-    @Override
-    public String get_type() {
-        return "operation";
-    }
+public class addition extends operations {
+
 
     public double operate(int num1, int num2){
         return num1 + num2;
@@ -18,7 +15,8 @@ public class addition extends token {
     Addition        1
     Subtraction     1
      */
-    public int get_priority(){
-        return 1;
+    @Override
+    public int get_priority() {
+        return 0;
     }
 }
