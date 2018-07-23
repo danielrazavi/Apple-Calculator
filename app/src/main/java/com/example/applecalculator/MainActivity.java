@@ -1,6 +1,5 @@
 package com.example.applecalculator;
 
-import android.media.session.MediaSession;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 
@@ -21,17 +20,15 @@ import java.util.LinkedList;
 import java.util.Stack;
 import java.util.Queue;
 
-import static java.lang.Integer.parseInt;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     //Views
-    private ImageButton zero_button, one_button, two_button, three_button, four_button, five_button,
-            six_button, seven_button, eight_button, nine_button;
+    private ImageButton zero_button, one_button, two_button, three_button, four_button,
+            five_button, six_button, seven_button, eight_button, nine_button;
     private ImageButton percent_button,period_button,posneg_button,process_button,clear_button,
             multi_button,division_button,add_button,subtract_button;
     TextView mathView;
-
     //Data Structures
     Stack<token> operations_stack;
     Queue<token> multi_usage_queue;
@@ -39,8 +36,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public static String math_view = "0";
 
     operations new_opt = null;
-
-    //flags
+    //Flags
     Boolean reset_flag = true;
     Boolean used_already = false;
 
@@ -130,61 +126,57 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View view){
-
+        //if it wasn't a number click:
         if (!number_clicked(view)){
 
             double translation = Double.parseDouble(math_view);
 
-            //operations check
-            if(view.getId() == R.id.multibutton)        { new_opt = new multiplication();}
-            else if(view.getId() == R.id.dvsnbutton)    { new_opt = new division();}
-            else if(view.getId() == R.id.addbutton)     { new_opt = new addition();}
-            else if(view.getId() == R.id.subtractbutton){ new_opt = new subtraction();}
+            //if it wasn't an operation click:
+            if(!operation_clicked(view, translation)){
 
-            else if(view.getId() == R.id.percentbutton){
-                operations peek_opt = (operations) operations_stack.peek();
+                if(view.getId() == R.id.percentbutton){
+                    operations peek_opt = (operations) operations_stack.peek();
 
-                if (translation == 0){
-                    math_view = String.valueOf(0);
+                    if (translation == 0){
+                        math_view = String.valueOf(0);
+                    }
+
+                    else if(peek_opt.get_priority() == 2){      //Multiplication and Division
+                        translation = translation * 0.01;
+                        math_view = String.valueOf(translation);
+                    }
+
+                    else if(peek_opt.get_priority() == 1){      //Addition and Subtraction
+                        translation = translation * 0.01
+                                * calculate_queue(new LinkedList<>(multi_usage_queue));
+                        math_view = String.valueOf(translation);
+                    }
+                }
+                else if(view.getId() == R.id.processbutton){
+                    number_handler(translation);    //for the number on the user view
+                    Double result_so_far = calculate_queue(new LinkedList<>(multi_usage_queue));
+                    while (!multi_usage_queue.isEmpty()) {
+                        multi_usage_queue.remove();
+                    }
+                    math_view = String.valueOf(result_so_far);
+
                 }
 
-                else if(peek_opt.get_priority() == 2){      //Multiplication and Division
-                    translation = translation / 100;
-                }
-
-                else if(peek_opt.get_priority() == 1){      //Addition and Subtraction
-                    translation = translation * 0.01
-                            * calculate_queue(new LinkedList<>(multi_usage_queue));
-                }
-
+                mathView.setText(math_view);
             }
-
-            else if(view.getId() == R.id.processbutton){
-                numbers current_number = new numbers(translation);
-                multi_usage_queue.add(current_number);
-                reset_flag = true;
-                used_already = false;
-                math_view = String.valueOf(calculate_queue(new LinkedList<token>(multi_usage_queue)));
-                while (!multi_usage_queue.isEmpty()){
-                    multi_usage_queue.remove();
-                }
-                //something is def not finished here! need to figure it out, don't have enough time
-                //right now, gotta run out.
-
-                //gotta give the solution, if there isn't a second operand, you repeat what ever
-                //you have for the math_view.
-            }
-
-            if (new_opt != null){       //if it's an operation
-                update_operations_stack(new_opt);
-                operations_stack.push(new_opt);
-            }
-
-            numbers current_number = new numbers(translation);
-            multi_usage_queue.add(current_number);
-            reset_flag = true;
-            used_already = false;
         }
+    }
+
+    /**
+     * Makes the number object, adds it into the multi usage queue, and then makes sure the app
+     * knows to reset user view flag, and the decimal usage flag.
+     * @param num: the translation of the math_view.
+     */
+    private void number_handler(double num){
+        numbers current_number = new numbers(num);
+        multi_usage_queue.add(current_number);
+        reset_flag = true;
+        used_already = false;
     }
 
     /**
@@ -195,106 +187,107 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @NonNull
     private Boolean number_clicked(View view){
 
-        if(view.getId() == R.id.zerobutton){
+        if(view.getId() == R.id.zerobutton)         {
             if (reset_flag){
                 reset_flag = false;
                 math_view = "0";
             }else if(!math_view.equals("0")){
                 math_view = math_view + "0";
             }
+            mathView.setText(math_view);
             return true;
         }
-
-        else if(view.getId() == R.id.onebutton){
+        else if(view.getId() == R.id.onebutton)     {
             if (reset_flag){
                 reset_flag = false;
                 math_view = "1";
             }else{
                 math_view = math_view + "1";
             }
+            mathView.setText(math_view);
             return true;
         }
-
-        else if(view.getId() == R.id.twobutton){
+        else if(view.getId() == R.id.twobutton)     {
             if (reset_flag){
                 reset_flag = false;
                 math_view = "2";
             }else{
                 math_view = math_view + "2";
             }
+            mathView.setText(math_view);
             return true;
         }
-
-        else if(view.getId() == R.id.threebutton){
+        else if(view.getId() == R.id.threebutton)   {
             if (reset_flag){
                 reset_flag = false;
                 math_view = "3";
             }else{
                 math_view = math_view + "3";
             }
+            mathView.setText(math_view);
             return true;
         }
-
-        else if(view.getId() == R.id.fourbutton){
+        else if(view.getId() == R.id.fourbutton)    {
             if (reset_flag){
                 reset_flag = false;
                 math_view = "4";
             }else{
                 math_view = math_view + "4";
             }
+            mathView.setText(math_view);
             return true;
         }
-
-        else if(view.getId() == R.id.fivebutton){
+        else if(view.getId() == R.id.fivebutton)    {
             if (reset_flag){
                 reset_flag = false;
                 math_view = "5";
             }else{
                 math_view = math_view + "5";
             }
+            mathView.setText(math_view);
             return true;
         }
-
-        else if(view.getId() == R.id.sixbutton){
+        else if(view.getId() == R.id.sixbutton)     {
             if (reset_flag){
                 reset_flag = false;
                 math_view = "6";
             }else{
                 math_view = math_view + "6";
             }
+            mathView.setText(math_view);
             return true;
         }
-
-        else if(view.getId() == R.id.sevenbutton){
+        else if(view.getId() == R.id.sevenbutton)   {
             if (reset_flag){
                 reset_flag = false;
                 math_view = "7";
             }else{
                 math_view = math_view + "7";
             }
+            mathView.setText(math_view);
             return true;
         }
-
-        else if(view.getId() == R.id.eightbutton){
+        else if(view.getId() == R.id.eightbutton)   {
             if (reset_flag){
                 reset_flag = false;
                 math_view = "8";
             }else{
                 math_view = math_view + "8";
             }
+            mathView.setText(math_view);
             return true;
         }
-
-        else if(view.getId() == R.id.ninebutton){
+        else if(view.getId() == R.id.ninebutton)    {
             if (reset_flag){
                 reset_flag = false;
                 math_view = "9";
             }else{
                 math_view = math_view + "9";
             }
+            mathView.setText(math_view);
             return true;
         }
-        else if(view.getId() == R.id.periodbutton){
+        else if(view.getId() == R.id.periodbutton)  {
             if (reset_flag){
                 reset_flag = false;
                 used_already = true;
@@ -303,40 +296,86 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 used_already = true;
                 math_view = math_view + ".";
             }
+            mathView.setText(math_view);
             return true;
-        }else if(view.getId() == R.id.pnbutton){
+        }
+        else if(view.getId() == R.id.pnbutton)      {
             if (math_view.charAt(0) == '-'){
                 math_view = math_view.substring(1);
             }else {
                 math_view = '-' + math_view;
 
             }
+            mathView.setText(math_view);
             return true;
         }
+
         return false;
     }
 
     /**
-     * Basically enforcing BEDMAS.
+     * If the button clicked is an operation, it will identify it, add it to the operation
+     * stack and then return true to let the app know it was a operation click.
+     * @param view: the button that was clicked.
+     * @return Boolean: whether if the view clicked, was an operation button.
+     */
+    private Boolean operation_clicked(View view, Double num){
+        int isDone = 0;
+
+        //operations check.
+        if(view.getId() == R.id.multibutton) {
+            new_opt = new multiplication();
+            isDone = 1;
+        }
+        else if(view.getId() == R.id.dvsnbutton){
+            new_opt = new division();
+            isDone =  1;
+        }
+        else if(view.getId() == R.id.addbutton){
+            new_opt = new addition();
+            isDone = 1;
+        }
+        else if(view.getId() == R.id.subtractbutton){
+            new_opt = new subtraction();
+            isDone = 1;
+        }
+
+        //stack handle after identification.
+        if (isDone == 1){
+            number_handler(num);
+            operations_handler(new_opt);
+
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    /**
+     * Basically adding the received operation and then properly adding it to the stack, while
+     * making sure the stack and queue are in correct standing (the Shunting-yard algorithm).
+     *
      * If the new operation has a higher/equal priority then the peak operation, the peak operation
      * needs to go to the Queue, so that it is not dealt with anymore. If the stack is empty, then
      * nothing needs to be done.
+     *
      * @param new_opt: the new operation that needs to enter the stack
      */
-    private void update_operations_stack(operations new_opt){
+    private void operations_handler(operations new_opt){
         int kick = 0;
         if (operations_stack.isEmpty()){
-            kick++;
+            kick = 1;
         }
         while (kick == 0) {
             operations peek_opt = (operations) operations_stack.peek();
             if (peek_opt.get_priority() >= new_opt.get_priority()) {
-                token switchie_token = operations_stack.pop();
-                multi_usage_queue.add(switchie_token);
+                token switch_token = operations_stack.pop();
+                multi_usage_queue.add(switch_token);
             }else{
-                kick++;
+                kick = 1;
             }
         }
+        operations_stack.push(new_opt);
     }
 
     /**

@@ -63,3 +63,9 @@ In order to do that, I need to make a
 utility class so that each method is a 
 helper function. For now make it in Main 
 Activity.
+
+wait so have you considered all 
+possibilities of the process button?
+
+Need to make sure buttons actually change
+the user view.
