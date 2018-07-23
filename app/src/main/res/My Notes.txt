@@ -68,4 +68,6 @@ wait so have you considered all
 possibilities of the process button?
 
 Need to make sure buttons actually change
-the user view.
+the user view. They do! Yay!
+
+App is done now, need to debug from now.
