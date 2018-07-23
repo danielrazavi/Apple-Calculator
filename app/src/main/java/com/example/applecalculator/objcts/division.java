@@ -1,8 +1,13 @@
 package com.example.applecalculator.objcts;
 
+/**
+ * Created by Daniel on 2018-07-19.
+ */
+
 public class division extends operations {
 
-    public double operate(int num1, int num2){
+    @Override
+    public double operate(double num1, double num2){
         // How should I handle num2 equalling 0?
         return num1 / num2;
     }
@@ -17,6 +22,11 @@ public class division extends operations {
      */
     @Override
     public int get_priority() {
+        return 2;
+    }
+
+    @Override
+    public int get_num_operands() {
         return 2;
     }
 }

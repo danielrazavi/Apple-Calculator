@@ -6,7 +6,8 @@ package com.example.applecalculator.objcts;
 
 public class multiplication extends operations {
 
-    public double operate(int num1, int num2){
+    @Override
+    public double operate(double num1, double num2){
         return num1 * num2;
     }
 
@@ -20,6 +21,11 @@ public class multiplication extends operations {
      */
     @Override
     public int get_priority() {
+        return 2;
+    }
+
+    @Override
+    public int get_num_operands() {
         return 2;
     }
 }

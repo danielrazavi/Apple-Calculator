@@ -56,3 +56,10 @@ programatically switch between different
 number types? or is there an easier way?
 
 Need to fix up percent and equal button.
+
+Should I make percent a helper function?
+and if so, can I put it into another file? 
+In order to do that, I need to make a 
+utility class so that each method is a 
+helper function. For now make it in Main 
+Activity.

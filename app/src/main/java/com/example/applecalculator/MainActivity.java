@@ -1,5 +1,6 @@
 package com.example.applecalculator;
 
+import android.media.session.MediaSession;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 
@@ -36,6 +37,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Queue<token> multi_usage_queue;
 
     public static String math_view = "0";
+
+    operations new_opt = null;
 
     //flags
     Boolean reset_flag = true;
@@ -129,34 +132,58 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View view){
 
         if (!number_clicked(view)){
-            double translation = parseInt(math_view);
-            numbers current_number = new numbers(translation);
-            operations new_opt = null;
-            multi_usage_queue.add(current_number);
-            reset_flag = true;
-            used_already = false;
 
-            //operations
-            if(view.getId() == R.id.multibutton) { new_opt = new multiplication();}
-            else if(view.getId() == R.id.dvsnbutton) { new_opt = new division();}
-            else if(view.getId() == R.id.addbutton) { new_opt = new addition();}
-            else if(view.getId() == R.id.subtractbutton) { new_opt = new subtraction();}
-            //but what about these?
+            double translation = Double.parseDouble(math_view);
+
+            //operations check
+            if(view.getId() == R.id.multibutton)        { new_opt = new multiplication();}
+            else if(view.getId() == R.id.dvsnbutton)    { new_opt = new division();}
+            else if(view.getId() == R.id.addbutton)     { new_opt = new addition();}
+            else if(view.getId() == R.id.subtractbutton){ new_opt = new subtraction();}
+
             else if(view.getId() == R.id.percentbutton){
-                int check_number = Integer.parseInt(math_view);
-                if (check_number != 0){
-                    math_view = String.valueOf(check_number/100);
+                operations peek_opt = (operations) operations_stack.peek();
+
+                if (translation == 0){
+                    math_view = String.valueOf(0);
                 }
+
+                else if(peek_opt.get_priority() == 2){      //Multiplication and Division
+                    translation = translation / 100;
+                }
+
+                else if(peek_opt.get_priority() == 1){      //Addition and Subtraction
+                    translation = translation * 0.01
+                            * calculate_queue(new LinkedList<>(multi_usage_queue));
+                }
+
             }
+
             else if(view.getId() == R.id.processbutton){
+                numbers current_number = new numbers(translation);
+                multi_usage_queue.add(current_number);
+                reset_flag = true;
+                used_already = false;
+                math_view = String.valueOf(calculate_queue(new LinkedList<token>(multi_usage_queue)));
+                while (!multi_usage_queue.isEmpty()){
+                    multi_usage_queue.remove();
+                }
+                //something is def not finished here! need to figure it out, don't have enough time
+                //right now, gotta run out.
+
                 //gotta give the solution, if there isn't a second operand, you repeat what ever
                 //you have for the math_view.
             }
 
-            if (new_opt != null){
+            if (new_opt != null){       //if it's an operation
                 update_operations_stack(new_opt);
                 operations_stack.push(new_opt);
             }
+
+            numbers current_number = new numbers(translation);
+            multi_usage_queue.add(current_number);
+            reset_flag = true;
+            used_already = false;
         }
     }
 
@@ -311,4 +338,37 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
     }
+
+    /**
+     * This function is designed to calculate the outcome of a given queue.
+     * Implements the Postfix Calculator Algorithm.
+     * @param some_queue: the multi_usage_queue in this scenario.
+     * @return outcome: the out come of the given queue.
+     */
+    private double calculate_queue(Queue<token> some_queue){
+
+        Stack<numbers> number_stack = new Stack<>();
+        while (!some_queue.isEmpty()){
+
+            token first_token = some_queue.remove();
+
+            if (first_token.get_type().equals("number")){
+                number_stack.push((numbers) first_token);
+            }
+
+            else{
+                operations current_operation = (operations) first_token;
+                double right = number_stack.pop().get_value();
+                double left = number_stack.pop().get_value();
+
+                double result = current_operation.operate(left, right);
+                numbers new_num = new numbers(result);
+                number_stack.push(new_num);
+            }
+        }
+
+        return number_stack.pop().get_value();
+    }
+
+
 }
