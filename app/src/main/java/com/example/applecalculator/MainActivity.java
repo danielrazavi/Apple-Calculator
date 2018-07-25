@@ -92,8 +92,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     /**
-     * Setting up the listeners for the views in one convenient function. Mostly beacause it's more
-     * origanised like this.
+     * Setting up the listeners for the views in one convenient function. Mostly because it's more
+     * organized like this.
      */
     private void setup_listeners() {
 
@@ -151,18 +151,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                 * calculate_queue(new LinkedList<>(multi_usage_queue));
                         math_view = String.valueOf(translation);
                     }
+                    mathView.setText(math_view);
+
                 }
+
                 else if(view.getId() == R.id.processbutton){
+
                     number_handler(translation);    //for the number on the user view
-                    Double result_so_far = calculate_queue(new LinkedList<>(multi_usage_queue));
+                    Double result_so_far =
+                            calculate_queue(new LinkedList<>(multi_usage_queue));
+
                     while (!multi_usage_queue.isEmpty()) {
                         multi_usage_queue.remove();
                     }
+
                     math_view = String.valueOf(result_so_far);
-
+                    mathView.setText(math_view);
                 }
-
-                mathView.setText(math_view);
             }
         }
     }
