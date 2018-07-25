@@ -12,6 +12,7 @@ import com.example.applecalculator.objcts.subtraction;
 import com.example.applecalculator.objcts.token;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -48,6 +49,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         setup_views();
         setup_listeners();
+
+        Log.v("TOC","hello");
 
         operations_stack = new Stack<>();
         multi_usage_queue = new LinkedList<>();
@@ -126,15 +129,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View view){
-        //if it wasn't a number click:
-        if (!number_clicked(view)){
 
-            double translation = Double.parseDouble(math_view);
+        double translation = Double.parseDouble(math_view);
+        Boolean found = false;
+        found = number_clicked(view);
 
-            //if it wasn't an operation click:
-            if(!operation_clicked(view, translation)){
+        if (!found){
+            found = operation_clicked(view,translation);
+        }
 
-                if(view.getId() == R.id.percentbutton){
+        if(!found){
+            if(view.getId() == R.id.percentbutton){
                     operations peek_opt = (operations) operations_stack.peek();
 
                     if (translation == 0){
@@ -153,21 +158,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
                     mathView.setText(math_view);
 
+            }
+            else if(view.getId() == R.id.processbutton){
+
+
+                number_handler(translation);    //for the number on the user view
+                Double result_so_far =
+                        calculate_queue(new LinkedList<>(multi_usage_queue));
+
+                while (!multi_usage_queue.isEmpty()) {
+                    multi_usage_queue.remove();
                 }
 
-                else if(view.getId() == R.id.processbutton){
-
-                    number_handler(translation);    //for the number on the user view
-                    Double result_so_far =
-                            calculate_queue(new LinkedList<>(multi_usage_queue));
-
-                    while (!multi_usage_queue.isEmpty()) {
-                        multi_usage_queue.remove();
-                    }
-
-                    math_view = String.valueOf(result_so_far);
-                    mathView.setText(math_view);
-                }
+                math_view = String.valueOf(result_so_far);
+                mathView.setText(math_view);
             }
         }
     }
@@ -372,7 +376,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             kick = 1;
         }
         while (kick == 0) {
+            //Error (Line Below): Casting 'Operations' to a 'Numbers' Token.
             operations peek_opt = (operations) operations_stack.peek();
+            Log.v("TOC",operations_stack.peek().get_type());
+
             if (peek_opt.get_priority() >= new_opt.get_priority()) {
                 token switch_token = operations_stack.pop();
                 multi_usage_queue.add(switch_token);
@@ -400,12 +407,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 number_stack.push((numbers) first_token);
             }
 
-            else{
+            else if (first_token.get_type().equals("operation")){
                 operations current_operation = (operations) first_token;
                 double right = number_stack.pop().get_value();
                 double left = number_stack.pop().get_value();
 
                 double result = current_operation.operate(left, right);
+                Log.d("sol",String.valueOf(result));
                 numbers new_num = new numbers(result);
                 number_stack.push(new_num);
             }
