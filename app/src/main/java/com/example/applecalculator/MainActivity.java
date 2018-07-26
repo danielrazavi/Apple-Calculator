@@ -371,20 +371,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * @param new_opt: the new operation that needs to enter the stack
      */
     private void operations_handler(operations new_opt){
-        int kick = 0;
-        if (operations_stack.isEmpty()){
-            kick = 1;
-        }
-        while (kick == 0) {
+
+        while (!operations_stack.isEmpty()) {
             //Error (Line Below): Casting 'Operations' to a 'Numbers' Token.
             operations peek_opt = (operations) operations_stack.peek();
+
             Log.v("TOC",operations_stack.peek().get_type());
 
             if (peek_opt.get_priority() >= new_opt.get_priority()) {
                 token switch_token = operations_stack.pop();
                 multi_usage_queue.add(switch_token);
             }else{
-                kick = 1;
+                break;
             }
         }
         operations_stack.push(new_opt);
@@ -421,6 +419,5 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         return number_stack.pop().get_value();
     }
-
 
 }
