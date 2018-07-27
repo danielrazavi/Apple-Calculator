@@ -153,9 +153,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                 * calculate_queue(new LinkedList<>(multi_usage_queue));
                         math_view = String.valueOf(translation);
                     }
-                    mathView.setText(easy_read(math_view));
-
-            }
+                    mathView.setText(easy_read(math_view));}
             else if(view.getId() == R.id.processbutton){
 
 
@@ -173,7 +171,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             else if(view.getId() == R.id.acbutton){
 
                 if (!reset_flag && !ac_flag){
-                    reset_flag = true;
+
                     ac_flag = true;
                 }
                 else if(ac_flag){
@@ -183,15 +181,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     while (!operations_stack.isEmpty()){
                         operations_stack.pop();
                     }
-                    reset_flag = true;
                 }
 
+                reset_flag = true;
+                period_flag = false;
                 math_view = "0";
                 mathView.setText(easy_read(math_view));
 
             }
-
-
         }
     }
 
@@ -488,15 +485,31 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * @param s: String representation of the number that needs to become easier to read.
      * @return result: brand new string that is easily read.
      */
-    private String easy_read(String s){
+    private String easy_read(String s) {
+        int num_digits = s.length();
+        int pos_dot = s.indexOf(".");
+        int pos_neg = s.indexOf("-");
 
-        int x = s.indexOf(".");
-        if(x == -1){
-            x = s.length();
+        if (pos_neg == -1) {pos_neg = 0;}
+        else {pos_neg = 1;}
+
+        if (pos_dot == -1) {pos_dot = num_digits;}
+
+        for (int i = pos_dot - 3; i > pos_neg; i = i - 3) {
+            s = s.substring(0, i) + "," + s.substring(i, s.length());
         }
 
-        for (int i = x-3 ; i > 0 ; i=i-3){
-            s = s.substring(0, i) + "," + s.substring(i, s.length());
+        /*
+        It's bad practice to set exact measurements for text sizes.
+        Right now the three sizes given are for specifically, Nexus 6p.
+         */
+
+        if (num_digits <= 7){
+            mathView.setTextSize(80);
+        }else if (num_digits == 8){
+            mathView.setTextSize(70);
+        }else if (num_digits == 9){
+            mathView.setTextSize(60);
         }
 
         return s;
