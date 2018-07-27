@@ -1,6 +1,5 @@
 package com.example.applecalculator;
 
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 
 import com.example.applecalculator.objcts.addition;
@@ -53,6 +52,74 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         operations_stack = new Stack<>();
         multi_usage_queue = new LinkedList<>();
 
+    }
+
+    @Override
+    public void onClick(View view){
+
+        double translation = Double.parseDouble(math_view);
+        Boolean found = false;
+        found = number_clicked(view);
+
+        if (!found){
+            found = operation_clicked(view,translation);
+        }
+
+        if(!found){
+            if(view.getId() == R.id.percentbutton){
+                operations peek_opt = (operations) operations_stack.peek();
+
+                if (translation == 0){
+                    math_view = String.valueOf(0);
+                }
+
+                else if(peek_opt.get_priority() == 2){      //Multiplication and Division
+                    translation = translation * 0.01;
+                    math_view = String.valueOf(translation);
+                }
+
+                else if(peek_opt.get_priority() == 1){      //Addition and Subtraction
+                    translation = translation * 0.01
+                            * calculate_queue(multi_usage_queue, operations_stack);
+                    math_view = String.valueOf(translation);
+                }
+                mathView.setText(easy_read(math_view));}
+            else if(view.getId() == R.id.processbutton){
+
+
+                number_handler(translation);    //for the number on the user view
+                Double result_so_far =
+                        calculate_queue(multi_usage_queue,operations_stack);
+
+                while (!multi_usage_queue.isEmpty()) {
+                    multi_usage_queue.remove();
+                }
+
+                math_view = String.valueOf(result_so_far);
+                mathView.setText(easy_read(math_view));
+            }
+            else if(view.getId() == R.id.acbutton){
+
+                if (!reset_flag && !ac_flag){
+
+                    ac_flag = true;
+                }
+                else if(ac_flag){
+                    while (!multi_usage_queue.isEmpty()) {
+                        multi_usage_queue.remove();
+                    }
+                    while (!operations_stack.isEmpty()){
+                        operations_stack.pop();
+                    }
+                }
+
+                reset_flag = true;
+                period_flag = false;
+                math_view = "0";
+                mathView.setText(easy_read(math_view));
+
+            }
+        }
     }
 
     /**
@@ -124,74 +191,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         subtract_button.setOnClickListener(this);
     }
 
-    @Override
-    public void onClick(View view){
-
-        double translation = Double.parseDouble(math_view);
-        Boolean found = false;
-        found = number_clicked(view);
-
-        if (!found){
-            found = operation_clicked(view,translation);
-        }
-
-        if(!found){
-            if(view.getId() == R.id.percentbutton){
-                    operations peek_opt = (operations) operations_stack.peek();
-
-                    if (translation == 0){
-                        math_view = String.valueOf(0);
-                    }
-
-                    else if(peek_opt.get_priority() == 2){      //Multiplication and Division
-                        translation = translation * 0.01;
-                        math_view = String.valueOf(translation);
-                    }
-
-                    else if(peek_opt.get_priority() == 1){      //Addition and Subtraction
-                        translation = translation * 0.01
-                                * calculate_queue(new LinkedList<>(multi_usage_queue));
-                        math_view = String.valueOf(translation);
-                    }
-                    mathView.setText(easy_read(math_view));}
-            else if(view.getId() == R.id.processbutton){
-
-
-                number_handler(translation);    //for the number on the user view
-                Double result_so_far =
-                        calculate_queue(new LinkedList<>(multi_usage_queue));
-
-                while (!multi_usage_queue.isEmpty()) {
-                    multi_usage_queue.remove();
-                }
-
-                math_view = String.valueOf(result_so_far);
-                mathView.setText(easy_read(math_view));
-            }
-            else if(view.getId() == R.id.acbutton){
-
-                if (!reset_flag && !ac_flag){
-
-                    ac_flag = true;
-                }
-                else if(ac_flag){
-                    while (!multi_usage_queue.isEmpty()) {
-                        multi_usage_queue.remove();
-                    }
-                    while (!operations_stack.isEmpty()){
-                        operations_stack.pop();
-                    }
-                }
-
-                reset_flag = true;
-                period_flag = false;
-                math_view = "0";
-                mathView.setText(easy_read(math_view));
-
-            }
-        }
-    }
-
     /**
      * Makes the number object, adds it into the multi usage queue, and then makes sure the app
      * knows to reset user view flag, and the decimal usage flag.
@@ -209,7 +208,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * @param view: the view that was clicked
      * @return Boolean representing whether if the clicked view was any of the numbered buttons.
      */
-    @NonNull
     private Boolean number_clicked(View view){
 
         if(view.getId() == R.id.zerobutton)         {
@@ -218,9 +216,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 ac_flag = false;
                 math_view = "0";
             }else if(!math_view.equals("0")){
-                if(check_nine(math_view + "0")){
+//                if(check_nine(math_view + "0")){
                     math_view = math_view + "0";
-                }
+//                }
             }
             mathView.setText(easy_read(math_view));
             return true;
@@ -231,9 +229,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 ac_flag = false;
                 math_view = "1";
             }else{
-                if(check_nine(math_view + "1")){
+//                if(check_nine(math_view + "1")){
                     math_view = math_view + "1";
-                }
+//                }
             }
             mathView.setText(easy_read(math_view));
             return true;
@@ -244,9 +242,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 ac_flag = false;
                 math_view = "2";
             }else{
-                if(check_nine(math_view + "2")){
+//                if(check_nine(math_view + "2")){
                     math_view = math_view + "2";
-                }
+//                }
             }
             mathView.setText(easy_read(math_view));
             return true;
@@ -257,9 +255,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 ac_flag = false;
                 math_view = "3";
             }else{
-                if(check_nine(math_view + "3")){
+//                if(check_nine(math_view + "3")){
                     math_view = math_view + "3";
-                }
+//                }
             }
             mathView.setText(easy_read(math_view));
             return true;
@@ -270,9 +268,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 ac_flag = false;
                 math_view = "4";
             }else{
-                if(check_nine(math_view + "4")){
+//                if(check_nine(math_view + "4")){
                     math_view = math_view + "4";
-                }
+//                }
             }
             mathView.setText(easy_read(math_view));
             return true;
@@ -283,9 +281,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 ac_flag = false;
                 math_view = "5";
             }else{
-                if(check_nine(math_view + "5")){
+//                if(check_nine(math_view + "5")){
                     math_view = math_view + "5";
-                }
+//                }
             }
             mathView.setText(easy_read(math_view));
             return true;
@@ -296,9 +294,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 ac_flag = false;
                 math_view = "6";
             }else{
-                if(check_nine(math_view + "6")){
+//                if(check_nine(math_view + "6")){
                     math_view = math_view + "6";
-                }
+//                }
             }
             mathView.setText(easy_read(math_view));
             return true;
@@ -309,9 +307,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 ac_flag = false;
                 math_view = "7";
             }else{
-                if(check_nine(math_view + "7")){
+//                if(check_nine(math_view + "7")){
                     math_view = math_view + "7";
-                }
+//                }
             }
             mathView.setText(easy_read(math_view));
             return true;
@@ -322,9 +320,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 ac_flag = false;
                 math_view = "8";
             }else{
-                if(check_nine(math_view + "8")){
+//                if(check_nine(math_view + "8")){
                     math_view = math_view + "8";
-                }
+//                }
             }
             mathView.setText(easy_read(math_view));
             return true;
@@ -335,9 +333,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 ac_flag = false;
                 math_view = "9";
             }else{
-                if(check_nine(math_view + "9")){
+//                if(check_nine(math_view + "9")){
                     math_view = math_view + "9";
-                }
+//                }
             }
             mathView.setText(easy_read(math_view));
             return true;
@@ -439,8 +437,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * @param some_queue: the multi_usage_queue in this scenario.
      * @return outcome: the out come of the given queue.
      */
-    private double calculate_queue(Queue<token> some_queue){
+    private double calculate_queue(Queue<token> some_queue,Stack<token> op_stack){
 
+        //Some of Shunting-Yard Algorithm
+        /* Moving the remaining operations from the operations stack. */
+        while(!op_stack.isEmpty()) {
+            some_queue.add(op_stack.pop());
+        }
+
+        //Postfix Calculator Algorithm
         Stack<numbers> number_stack = new Stack<>();
         while (!some_queue.isEmpty()){
 
@@ -456,7 +461,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 double left = number_stack.pop().get_value();
 
                 double result = current_operation.operate(left, right);
-                Log.d("sol",String.valueOf(result));
                 numbers new_num = new numbers(result);
                 number_stack.push(new_num);
             }
@@ -470,14 +474,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * @param s: the math_view
      * @return Boolean
      */
-    private Boolean check_nine(String s){
+    private String check_nine(String s){
         int count = 0;
+        StringBuilder sb = new StringBuilder();
+
         for (int i = 0, len = s.length(); i < len; i++) {
-            if (Character.isDigit(s.charAt(i))) {
+            if (count == 9){
+                break;
+            }
+            else if (Character.isDigit(s.charAt(i))) {
                 count++;
             }
+            sb.append(s.charAt(i));
         }
-        return count <= 9;
+        return sb.toString();
     }
 
     /**
@@ -510,8 +520,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             mathView.setTextSize(70);
         }else if (num_digits == 9){
             mathView.setTextSize(60);
+        }else if (num_digits > 9){
+            s = check_nine(s);
+            mathView.setTextSize(60);
         }
 
+        if(Double.valueOf(s)%1 == 0){
+            s = String.valueOf(Math.round(Double.valueOf(s)));
+        }
         return s;
     }
+
 }
