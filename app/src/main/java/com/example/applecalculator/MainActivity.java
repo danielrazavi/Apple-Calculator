@@ -10,8 +10,9 @@ import com.example.applecalculator.objcts.operations;
 import com.example.applecalculator.objcts.subtraction;
 import com.example.applecalculator.objcts.token;
 
-import android.os.Bundle;
 import android.util.Log;
+
+import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -26,8 +27,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //Views
     private ImageButton zero_button, one_button, two_button, three_button, four_button,
             five_button, six_button, seven_button, eight_button, nine_button;
-    private ImageButton percent_button,period_button,posneg_button,process_button,clear_button,
-            multi_button,division_button,add_button,subtract_button;
+    private ImageButton percent_button, period_button, posneg_button, process_button, clear_button,
+            multi_button, division_button, add_button, subtract_button;
     TextView mathView;
     //Data Structures
     Stack<token> operations_stack;
@@ -55,60 +56,54 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
-    public void onClick(View view){
+    public void onClick(View view) {
 
         double translation = Double.parseDouble(math_view);
-        Boolean found = false;
+        Boolean found;
         found = number_clicked(view);
 
-        if (!found){
-            found = operation_clicked(view,translation);
+        if (!found) {
+            found = operation_clicked(view, translation);
         }
 
-        if(!found){
-            if(view.getId() == R.id.percentbutton){
+        if (!found) {
+            if (view.getId() == R.id.percentbutton) {
                 operations peek_opt = (operations) operations_stack.peek();
 
-                if (translation == 0){
+                if (translation == 0) {
                     math_view = String.valueOf(0);
-                }
-
-                else if(peek_opt.get_priority() == 2){      //Multiplication and Division
+                } else if (peek_opt.get_priority() == 2) {      //Multiplication and Division
                     translation = translation * 0.01;
                     math_view = String.valueOf(translation);
-                }
-
-                else if(peek_opt.get_priority() == 1){      //Addition and Subtraction
+                } else if (peek_opt.get_priority() == 1) {      //Addition and Subtraction
                     translation = translation * 0.01
                             * calculate_queue(multi_usage_queue, operations_stack);
                     math_view = String.valueOf(translation);
                 }
-                mathView.setText(easy_read(math_view));}
-            else if(view.getId() == R.id.processbutton){
+                mathView.setText(easy_read(math_view,false));
+            } else if (view.getId() == R.id.processbutton) {
 
 
                 number_handler(translation);    //for the number on the user view
                 Double result_so_far =
-                        calculate_queue(multi_usage_queue,operations_stack);
+                        calculate_queue(multi_usage_queue, operations_stack);
 
                 while (!multi_usage_queue.isEmpty()) {
                     multi_usage_queue.remove();
                 }
 
                 math_view = String.valueOf(result_so_far);
-                mathView.setText(easy_read(math_view));
-            }
-            else if(view.getId() == R.id.acbutton){
+                mathView.setText(easy_read(math_view,false));
+            } else if (view.getId() == R.id.acbutton) {
 
-                if (!reset_flag && !ac_flag){
+                if (!reset_flag && !ac_flag) {
 
                     ac_flag = true;
-                }
-                else if(ac_flag){
+                } else if (ac_flag) {
                     while (!multi_usage_queue.isEmpty()) {
                         multi_usage_queue.remove();
                     }
-                    while (!operations_stack.isEmpty()){
+                    while (!operations_stack.isEmpty()) {
                         operations_stack.pop();
                     }
                 }
@@ -116,7 +111,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 reset_flag = true;
                 period_flag = false;
                 math_view = "0";
-                mathView.setText(easy_read(math_view));
+                mathView.setText(easy_read(math_view,false));
 
             }
         }
@@ -126,7 +121,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * Setting up the views in one convenient function. Mostly because it's more organised like
      * this.
      */
-    private void setup_views(){
+    private void setup_views() {
 
         //interface
         mathView = findViewById(R.id.mathview);
@@ -194,9 +189,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     /**
      * Makes the number object, adds it into the multi usage queue, and then makes sure the app
      * knows to reset user view flag, and the decimal usage flag.
+     *
      * @param num: the translation of the math_view.
      */
-    private void number_handler(double num){
+    private void number_handler(double num) {
         numbers current_number = new numbers(num);
         multi_usage_queue.add(current_number);
         reset_flag = true;
@@ -205,162 +201,143 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     /**
      * Handles numbered buttons' clicks and how numbers are put together behind the scenes.
+     *
      * @param view: the view that was clicked
      * @return Boolean representing whether if the clicked view was any of the numbered buttons.
      */
-    private Boolean number_clicked(View view){
+    private Boolean number_clicked(View view) {
 
-        if(view.getId() == R.id.zerobutton)         {
-            if (reset_flag){
+        if (view.getId() == R.id.zerobutton) {
+            if (reset_flag) {
                 reset_flag = false;
                 ac_flag = false;
                 math_view = "0";
-            }else if(!math_view.equals("0")){
-//                if(check_nine(math_view + "0")){
-                    math_view = math_view + "0";
-//                }
+            } else if (!math_view.equals("0")) {
+                math_view = math_view + "0";
             }
-            mathView.setText(easy_read(math_view));
+            mathView.setText(easy_read(math_view,true));
             return true;
         }
-        else if(view.getId() == R.id.onebutton)     {
-            if (reset_flag){
+        else if (view.getId() == R.id.onebutton) {
+            if ((reset_flag) || (Double.parseDouble(math_view) == 0)) {
                 reset_flag = false;
                 ac_flag = false;
                 math_view = "1";
-            }else{
-//                if(check_nine(math_view + "1")){
-                    math_view = math_view + "1";
-//                }
+            } else {
+                math_view = math_view + "1";
             }
-            mathView.setText(easy_read(math_view));
+            mathView.setText(easy_read(math_view,true));
             return true;
         }
-        else if(view.getId() == R.id.twobutton)     {
-            if (reset_flag){
+        else if (view.getId() == R.id.twobutton) {
+            if ((reset_flag) || (Double.parseDouble(math_view) == 0)) {
                 reset_flag = false;
                 ac_flag = false;
                 math_view = "2";
-            }else{
-//                if(check_nine(math_view + "2")){
-                    math_view = math_view + "2";
-//                }
+            } else {
+                math_view = math_view + "2";
             }
-            mathView.setText(easy_read(math_view));
+            mathView.setText(easy_read(math_view, true));
             return true;
         }
-        else if(view.getId() == R.id.threebutton)   {
-            if (reset_flag){
+        else if (view.getId() == R.id.threebutton) {
+            if ((reset_flag) || (Double.parseDouble(math_view) == 0)) {
                 reset_flag = false;
                 ac_flag = false;
                 math_view = "3";
-            }else{
-//                if(check_nine(math_view + "3")){
-                    math_view = math_view + "3";
-//                }
+            } else {
+                math_view = math_view + "3";
             }
-            mathView.setText(easy_read(math_view));
+            mathView.setText(easy_read(math_view, true));
             return true;
         }
-        else if(view.getId() == R.id.fourbutton)    {
-            if (reset_flag){
+        else if (view.getId() == R.id.fourbutton) {
+            if ((reset_flag) || (Double.parseDouble(math_view) == 0)) {
                 reset_flag = false;
                 ac_flag = false;
                 math_view = "4";
-            }else{
-//                if(check_nine(math_view + "4")){
-                    math_view = math_view + "4";
-//                }
+            } else {
+                math_view = math_view + "4";
             }
-            mathView.setText(easy_read(math_view));
+            mathView.setText(easy_read(math_view, true));
             return true;
         }
-        else if(view.getId() == R.id.fivebutton)    {
-            if (reset_flag){
+        else if (view.getId() == R.id.fivebutton) {
+            if ((reset_flag) || (Double.parseDouble(math_view) == 0)) {
                 reset_flag = false;
                 ac_flag = false;
                 math_view = "5";
-            }else{
-//                if(check_nine(math_view + "5")){
-                    math_view = math_view + "5";
-//                }
+            } else {
+                math_view = math_view + "5";
             }
-            mathView.setText(easy_read(math_view));
+            mathView.setText(easy_read(math_view, true));
             return true;
         }
-        else if(view.getId() == R.id.sixbutton)     {
-            if (reset_flag){
+        else if (view.getId() == R.id.sixbutton) {
+            if ((reset_flag) || (Double.parseDouble(math_view) == 0)) {
                 reset_flag = false;
                 ac_flag = false;
                 math_view = "6";
-            }else{
-//                if(check_nine(math_view + "6")){
-                    math_view = math_view + "6";
-//                }
+            } else {
+                math_view = math_view + "6";
             }
-            mathView.setText(easy_read(math_view));
+            mathView.setText(easy_read(math_view, true));
             return true;
         }
-        else if(view.getId() == R.id.sevenbutton)   {
-            if (reset_flag){
+        else if (view.getId() == R.id.sevenbutton) {
+            if ((reset_flag) || (Double.parseDouble(math_view) == 0)) {
                 reset_flag = false;
                 ac_flag = false;
                 math_view = "7";
-            }else{
-//                if(check_nine(math_view + "7")){
-                    math_view = math_view + "7";
-//                }
+            } else {
+                math_view = math_view + "7";
             }
-            mathView.setText(easy_read(math_view));
+            mathView.setText(easy_read(math_view, true));
             return true;
         }
-        else if(view.getId() == R.id.eightbutton)   {
-            if (reset_flag){
+        else if (view.getId() == R.id.eightbutton) {
+            if ((reset_flag) || (Double.parseDouble(math_view) == 0)) {
                 reset_flag = false;
                 ac_flag = false;
                 math_view = "8";
-            }else{
-//                if(check_nine(math_view + "8")){
-                    math_view = math_view + "8";
-//                }
+            } else {
+                math_view = math_view + "8";
             }
-            mathView.setText(easy_read(math_view));
+            mathView.setText(easy_read(math_view, true));
             return true;
         }
-        else if(view.getId() == R.id.ninebutton)    {
-            if (reset_flag){
+        else if (view.getId() == R.id.ninebutton) {
+            if ((reset_flag) || (Double.parseDouble(math_view) == 0)) {
                 reset_flag = false;
                 ac_flag = false;
                 math_view = "9";
-            }else{
-//                if(check_nine(math_view + "9")){
-                    math_view = math_view + "9";
-//                }
+            } else {
+                math_view = math_view + "9";
             }
-            mathView.setText(easy_read(math_view));
+            mathView.setText(easy_read(math_view, true));
             return true;
         }
-        else if(view.getId() == R.id.periodbutton)  {
-            if (reset_flag){
+        else if (view.getId() == R.id.periodbutton) {
+            if ((reset_flag) || (Double.parseDouble(math_view) == 0)) {
                 reset_flag = false;
                 ac_flag = false;
                 period_flag = true;
                 math_view = "0.";
-            }else if (!period_flag){
+            } else if (!period_flag) {
                 period_flag = true;
                 math_view = math_view + ".";
             }
-            mathView.setText(easy_read(math_view));
+            mathView.setText(easy_read(math_view, true));
             return true;
         }
-        else if(view.getId() == R.id.pnbutton)      {
-            if (math_view.charAt(0) == '-'){
+        else if (view.getId() == R.id.pnbutton) {
+            if (math_view.charAt(0) == '-') {
                 math_view = math_view.substring(1);
-            }else {
+            } else {
                 math_view = '-' + math_view;
 
             }
-            mathView.setText(easy_read(math_view));
+            mathView.setText(easy_read(math_view, true));
             return true;
         }
 
@@ -370,37 +347,39 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     /**
      * If the button clicked is an operation, it will identify it, add it to the operation
      * stack and then return true to let the app know it was a operation click.
+     *
      * @param view: the button that was clicked.
      * @return Boolean: whether if the view clicked, was an operation button.
      */
-    private Boolean operation_clicked(View view, Double num){
+    private Boolean operation_clicked(View view, Double num) {
         int isDone = 0;
 
         //operations check.
-        if(view.getId() == R.id.multibutton) {
+        if (view.getId() == R.id.multibutton) {
             new_opt = new multiplication();
             isDone = 1;
-        }
-        else if(view.getId() == R.id.dvsnbutton){
+        } else if (view.getId() == R.id.dvsnbutton) {
             new_opt = new division();
-            isDone =  1;
-        }
-        else if(view.getId() == R.id.addbutton){
+            isDone = 1;
+        } else if (view.getId() == R.id.addbutton) {
             new_opt = new addition();
             isDone = 1;
-        }
-        else if(view.getId() == R.id.subtractbutton){
+        } else if (view.getId() == R.id.subtractbutton) {
             new_opt = new subtraction();
             isDone = 1;
         }
 
         //stack handle after identification.
-        if (isDone == 1){
+        if (isDone == 1) {
             number_handler(num);
             operations_handler(new_opt);
 
+//            Queue <token> queue_clone = new LinkedList<>(multi_usage_queue);
+//            Stack <token> stack_clone = (Stack<token>)operations_stack.clone();
+//            math_view = String.valueOf(calculate_queue(queue_clone,stack_clone));
+//            mathView.setText(easy_read(math_view,false));
             return true;
-        }else{
+        } else {
             return false;
         }
     }
@@ -408,14 +387,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     /**
      * Basically adding the received operation and then properly adding it to the stack, while
      * making sure the stack and queue are in correct standing (the Shunting-yard algorithm).
-     *
+     * <p>
      * If the new operation has a higher/equal priority then the peak operation, the peak operation
      * needs to go to the Queue, so that it is not dealt with anymore. If the stack is empty, then
      * nothing needs to be done.
      *
      * @param new_opt: the new operation that needs to enter the stack
      */
-    private void operations_handler(operations new_opt){
+    private void operations_handler(operations new_opt) {
 
         while (!operations_stack.isEmpty()) {
             operations peek_opt = (operations) operations_stack.peek();
@@ -423,7 +402,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (peek_opt.get_priority() >= new_opt.get_priority()) {
                 token switch_token = operations_stack.pop();
                 multi_usage_queue.add(switch_token);
-            }else{
+            } else {
                 break;
             }
         }
@@ -434,28 +413,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     /**
      * This function is designed to calculate the outcome of a given queue.
      * Implements the Postfix Calculator Algorithm.
+     *
      * @param some_queue: the multi_usage_queue in this scenario.
      * @return outcome: the out come of the given queue.
      */
-    private double calculate_queue(Queue<token> some_queue,Stack<token> op_stack){
+    private double calculate_queue(Queue<token> some_queue, Stack<token> op_stack) {
 
         //Some of Shunting-Yard Algorithm
         /* Moving the remaining operations from the operations stack. */
-        while(!op_stack.isEmpty()) {
+        while (!op_stack.isEmpty()) {
             some_queue.add(op_stack.pop());
         }
 
         //Postfix Calculator Algorithm
         Stack<numbers> number_stack = new Stack<>();
-        while (!some_queue.isEmpty()){
+        while (!some_queue.isEmpty()) {
 
             token first_token = some_queue.remove();
 
-            if (first_token.get_type().equals("number")){
+            if (first_token.get_type().equals("number")) {
                 number_stack.push((numbers) first_token);
-            }
-
-            else if (first_token.get_type().equals("operation")){
+            } else if (first_token.get_type().equals("operation")) {
                 operations current_operation = (operations) first_token;
                 double right = number_stack.pop().get_value();
                 double left = number_stack.pop().get_value();
@@ -471,18 +449,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     /**
      * This function checks whether if the given string is nine digits or less.
+     *
      * @param s: the math_view
      * @return Boolean
      */
-    private String check_nine(String s){
+    private String check_nine(String s) {
         int count = 0;
         StringBuilder sb = new StringBuilder();
 
         for (int i = 0, len = s.length(); i < len; i++) {
-            if (count == 9){
+            if (count == 9) {
                 break;
-            }
-            else if (Character.isDigit(s.charAt(i))) {
+            } else if (Character.isDigit(s.charAt(i))) {
                 count++;
             }
             sb.append(s.charAt(i));
@@ -494,46 +472,52 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * This function grabs results, puts commas throughout the results, accounts for the negative
      * sign, makes sure the font size gets smaller as there are more numbers presented in the
      * math_view, and the values would never get more then 9 digits.
+     *
      * @param s: String representation of the number that needs to become easier to read.
      * @return result: brand new string that is easily read.
      */
-    private String easy_read(String s) {
+    private String easy_read(String s,Boolean user_typed) {
         int num_digits = s.length();
         int pos_dot = s.indexOf(".");
         int pos_neg = s.indexOf("-");
 
-        //dot and neg sign handles.
-        if (pos_neg == -1) {pos_neg = 0;}
-        else {pos_neg = 1;}
-        if (pos_dot == -1) {pos_dot = num_digits;}
+        //no unnecessary decimal sign should ever be returned.
+        if ((pos_dot != -1) && (!user_typed) && (Double.parseDouble(s) % 1 == 0)) {
+            s = String.valueOf(Math.round(Double.parseDouble(s)));
+        }
+
+
+        //dot and neg sign handles - comma placement.
+        if (pos_neg == -1) {
+            pos_neg = 0;
+        } else {
+            pos_neg = 1;
+        }
+        if (pos_dot == -1) {
+            pos_dot = num_digits;
+        }
 
         //comma placement.
         for (int i = pos_dot - 3; i > pos_neg; i = i - 3) {
             s = s.substring(0, i) + "," + s.substring(i, s.length());
         }
 
-        /*
-        It's bad practice to set exact measurements for text sizes.
-        Right now the three sizes given are for specifically, Nexus 6p.
-         */
+        //make sure there is the 9 number limit.
+        s = check_nine(s);
 
         //font size.
-        if (num_digits <= 7){
+        if (num_digits <= 7) {
             mathView.setTextSize(80);
-        }else if (num_digits == 8){
+        } else if (num_digits == 8) {
             mathView.setTextSize(70);
-        }else if (num_digits == 9){
-            mathView.setTextSize(60);
-        }else if (num_digits > 9){
-            s = check_nine(s);
+        } else if (num_digits == 9) {
             mathView.setTextSize(60);
         }
 
-        //no unnecessary decimal sign.
-        if(Double.valueOf(s)%1 == 0){
-            s = String.valueOf(Math.round(Double.valueOf(s)));
-        }
+
+
+
         return s;
     }
-
 }
+
