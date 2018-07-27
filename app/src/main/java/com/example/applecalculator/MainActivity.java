@@ -491,7 +491,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     /**
-     * This function grabs results and puts commas throughout the results, for easier reading.
+     * This function grabs results, puts commas throughout the results, accounts for the negative
+     * sign, makes sure the font size gets smaller as there are more numbers presented in the
+     * math_view, and the values would never get more then 9 digits.
      * @param s: String representation of the number that needs to become easier to read.
      * @return result: brand new string that is easily read.
      */
@@ -500,11 +502,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         int pos_dot = s.indexOf(".");
         int pos_neg = s.indexOf("-");
 
+        //dot and neg sign handles.
         if (pos_neg == -1) {pos_neg = 0;}
         else {pos_neg = 1;}
-
         if (pos_dot == -1) {pos_dot = num_digits;}
 
+        //comma placement.
         for (int i = pos_dot - 3; i > pos_neg; i = i - 3) {
             s = s.substring(0, i) + "," + s.substring(i, s.length());
         }
@@ -514,6 +517,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Right now the three sizes given are for specifically, Nexus 6p.
          */
 
+        //font size.
         if (num_digits <= 7){
             mathView.setTextSize(80);
         }else if (num_digits == 8){
@@ -525,6 +529,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             mathView.setTextSize(60);
         }
 
+        //no unnecessary decimal sign.
         if(Double.valueOf(s)%1 == 0){
             s = String.valueOf(Math.round(Double.valueOf(s)));
         }
