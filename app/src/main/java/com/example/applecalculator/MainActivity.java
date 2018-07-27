@@ -39,8 +39,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     operations new_opt = null;
     //Flags
     Boolean reset_flag = true;
-    Boolean used_already = false;
-
+    Boolean ac_flag = false;
+    Boolean period_flag = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,8 +49,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         setup_views();
         setup_listeners();
-
-        Log.v("TOC","hello");
 
         operations_stack = new Stack<>();
         multi_usage_queue = new LinkedList<>();
@@ -126,7 +124,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         subtract_button.setOnClickListener(this);
     }
 
-
     @Override
     public void onClick(View view){
 
@@ -156,7 +153,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                 * calculate_queue(new LinkedList<>(multi_usage_queue));
                         math_view = String.valueOf(translation);
                     }
-                    mathView.setText(math_view);
+                    mathView.setText(easy_read(math_view));
 
             }
             else if(view.getId() == R.id.processbutton){
@@ -171,8 +168,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
 
                 math_view = String.valueOf(result_so_far);
-                mathView.setText(math_view);
+                mathView.setText(easy_read(math_view));
             }
+            else if(view.getId() == R.id.acbutton){
+
+                if (!reset_flag && !ac_flag){
+                    reset_flag = true;
+                    ac_flag = true;
+                }
+                else if(ac_flag){
+                    while (!multi_usage_queue.isEmpty()) {
+                        multi_usage_queue.remove();
+                    }
+                    while (!operations_stack.isEmpty()){
+                        operations_stack.pop();
+                    }
+                    reset_flag = true;
+                }
+
+                math_view = "0";
+                mathView.setText(easy_read(math_view));
+
+            }
+
+
         }
     }
 
@@ -185,7 +204,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         numbers current_number = new numbers(num);
         multi_usage_queue.add(current_number);
         reset_flag = true;
-        used_already = false;
+        period_flag = false;
     }
 
     /**
@@ -199,113 +218,144 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if(view.getId() == R.id.zerobutton)         {
             if (reset_flag){
                 reset_flag = false;
+                ac_flag = false;
                 math_view = "0";
             }else if(!math_view.equals("0")){
-                math_view = math_view + "0";
+                if(check_nine(math_view + "0")){
+                    math_view = math_view + "0";
+                }
             }
-            mathView.setText(math_view);
+            mathView.setText(easy_read(math_view));
             return true;
         }
         else if(view.getId() == R.id.onebutton)     {
             if (reset_flag){
                 reset_flag = false;
+                ac_flag = false;
                 math_view = "1";
             }else{
-                math_view = math_view + "1";
+                if(check_nine(math_view + "1")){
+                    math_view = math_view + "1";
+                }
             }
-            mathView.setText(math_view);
+            mathView.setText(easy_read(math_view));
             return true;
         }
         else if(view.getId() == R.id.twobutton)     {
             if (reset_flag){
                 reset_flag = false;
+                ac_flag = false;
                 math_view = "2";
             }else{
-                math_view = math_view + "2";
+                if(check_nine(math_view + "2")){
+                    math_view = math_view + "2";
+                }
             }
-            mathView.setText(math_view);
+            mathView.setText(easy_read(math_view));
             return true;
         }
         else if(view.getId() == R.id.threebutton)   {
             if (reset_flag){
                 reset_flag = false;
+                ac_flag = false;
                 math_view = "3";
             }else{
-                math_view = math_view + "3";
+                if(check_nine(math_view + "3")){
+                    math_view = math_view + "3";
+                }
             }
-            mathView.setText(math_view);
+            mathView.setText(easy_read(math_view));
             return true;
         }
         else if(view.getId() == R.id.fourbutton)    {
             if (reset_flag){
                 reset_flag = false;
+                ac_flag = false;
                 math_view = "4";
             }else{
-                math_view = math_view + "4";
+                if(check_nine(math_view + "4")){
+                    math_view = math_view + "4";
+                }
             }
-            mathView.setText(math_view);
+            mathView.setText(easy_read(math_view));
             return true;
         }
         else if(view.getId() == R.id.fivebutton)    {
             if (reset_flag){
                 reset_flag = false;
+                ac_flag = false;
                 math_view = "5";
             }else{
-                math_view = math_view + "5";
+                if(check_nine(math_view + "5")){
+                    math_view = math_view + "5";
+                }
             }
-            mathView.setText(math_view);
+            mathView.setText(easy_read(math_view));
             return true;
         }
         else if(view.getId() == R.id.sixbutton)     {
             if (reset_flag){
                 reset_flag = false;
+                ac_flag = false;
                 math_view = "6";
             }else{
-                math_view = math_view + "6";
+                if(check_nine(math_view + "6")){
+                    math_view = math_view + "6";
+                }
             }
-            mathView.setText(math_view);
+            mathView.setText(easy_read(math_view));
             return true;
         }
         else if(view.getId() == R.id.sevenbutton)   {
             if (reset_flag){
                 reset_flag = false;
+                ac_flag = false;
                 math_view = "7";
             }else{
-                math_view = math_view + "7";
+                if(check_nine(math_view + "7")){
+                    math_view = math_view + "7";
+                }
             }
-            mathView.setText(math_view);
+            mathView.setText(easy_read(math_view));
             return true;
         }
         else if(view.getId() == R.id.eightbutton)   {
             if (reset_flag){
                 reset_flag = false;
+                ac_flag = false;
                 math_view = "8";
             }else{
-                math_view = math_view + "8";
+                if(check_nine(math_view + "8")){
+                    math_view = math_view + "8";
+                }
             }
-            mathView.setText(math_view);
+            mathView.setText(easy_read(math_view));
             return true;
         }
         else if(view.getId() == R.id.ninebutton)    {
             if (reset_flag){
                 reset_flag = false;
+                ac_flag = false;
                 math_view = "9";
             }else{
-                math_view = math_view + "9";
+                if(check_nine(math_view + "9")){
+                    math_view = math_view + "9";
+                }
             }
-            mathView.setText(math_view);
+            mathView.setText(easy_read(math_view));
             return true;
         }
         else if(view.getId() == R.id.periodbutton)  {
             if (reset_flag){
                 reset_flag = false;
-                used_already = true;
+                ac_flag = false;
+                period_flag = true;
                 math_view = "0.";
-            }else if (!used_already){
-                used_already = true;
+            }else if (!period_flag){
+                period_flag = true;
                 math_view = math_view + ".";
             }
-            mathView.setText(math_view);
+            mathView.setText(easy_read(math_view));
             return true;
         }
         else if(view.getId() == R.id.pnbutton)      {
@@ -315,7 +365,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 math_view = '-' + math_view;
 
             }
-            mathView.setText(math_view);
+            mathView.setText(easy_read(math_view));
             return true;
         }
 
@@ -373,10 +423,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void operations_handler(operations new_opt){
 
         while (!operations_stack.isEmpty()) {
-            //Error (Line Below): Casting 'Operations' to a 'Numbers' Token.
             operations peek_opt = (operations) operations_stack.peek();
-
-            Log.v("TOC",operations_stack.peek().get_type());
 
             if (peek_opt.get_priority() >= new_opt.get_priority()) {
                 token switch_token = operations_stack.pop();
@@ -385,6 +432,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             }
         }
+
         operations_stack.push(new_opt);
     }
 
@@ -420,4 +468,37 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return number_stack.pop().get_value();
     }
 
+    /**
+     * This function checks whether if the given string is nine digits or less.
+     * @param s: the math_view
+     * @return Boolean
+     */
+    private Boolean check_nine(String s){
+        int count = 0;
+        for (int i = 0, len = s.length(); i < len; i++) {
+            if (Character.isDigit(s.charAt(i))) {
+                count++;
+            }
+        }
+        return count <= 9;
+    }
+
+    /**
+     * This function grabs results and puts commas throughout the results, for easier reading.
+     * @param s: String representation of the number that needs to become easier to read.
+     * @return result: brand new string that is easily read.
+     */
+    private String easy_read(String s){
+
+        int x = s.indexOf(".");
+        if(x == -1){
+            x = s.length();
+        }
+
+        for (int i = x-3 ; i > 0 ; i=i-3){
+            s = s.substring(0, i) + "," + s.substring(i, s.length());
+        }
+
+        return s;
+    }
 }
